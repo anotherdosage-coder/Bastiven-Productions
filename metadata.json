@@ -1,0 +1,7 @@
+{
+  "name": "ScreamTongue",
+  "description": "ScreamTongue is an audio transcription and language analysis tool with a 'metalcore' aesthetic. It deconstructs language to explain why a phrase is used, revealing the cultural nuance, subtext, and meaning that is typically lost.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

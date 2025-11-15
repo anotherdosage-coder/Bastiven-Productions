@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ScreamTongue</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --color-bg: #111111;
+        --color-surface: #1a1a1a;
+        --color-border: #333333;
+        --color-text: #e0e0e0;
+        --color-text-muted: #888888;
+        --color-primary: #c70039;
+        --color-secondary: #ffc300;
+      }
+
+      body {
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        font-family: 'Roboto', sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+      
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEWFhYWDg4N3d3dtbW17e3t1dXVuZmaDg4OGhoaFhYWDg4N5eXlwcHCjo6N9fX19fX17e3t4eHhfX19ra2uRkZGZmZlpaWmXl5dvb29xcXGTk5N9fX1pZ2d3d3d2dnZ7e3u7AabeAAAAF3RSTlPn5e3v7wP7+dkB+dkF/e0F/e0B/e0B/e0BwDPxYAAAARlJREFUeAFjZkCCwYABYwYgA2MGIAVjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAGYwYgA2MGIAZjBiADYwYgBWNGIAZjBiAEMWAAEIwAAB9eA/tQBFMAAAAASUVORK5CYII=');
+        opacity: 0.04;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .font-display {
+        font-family: 'Anton', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in { animation: fadeIn 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+      @keyframes slide-in-text {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      .slide-in-text span {
+        display: inline-block;
+        overflow: hidden;
+      }
+      .slide-in-text span span {
+        display: inline-block;
+        animation: slide-in-text 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      }
+      
+      /* Custom UI Elements */
+      textarea, input, select {
+        background-color: #0a0a0a;
+        border: 1px solid var(--color-border);
+        color: var(--color-text);
+        transition: all 0.2s ease-in-out;
+      }
+      textarea:focus, input:focus, select:focus {
+        outline: none;
+        border-color: var(--color-secondary);
+        box-shadow: 0 0 10px rgba(255, 195, 0, 0.2);
+      }
+      select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffc300' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding-right: 2.5rem;
+      }
+      select option {
+        background: var(--color-bg);
+        color: var(--color-text);
+      }
+      
+      .btn {
+        font-family: 'Anton', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.6rem 1.8rem;
+        background: var(--color-primary);
+        color: #fff;
+        border: 2px solid var(--color-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+      }
+      .btn:hover:not(:disabled) {
+        background: #111;
+        color: var(--color-primary);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        filter: grayscale(80%);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-muted);
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+        text-transform: none;
+        letter-spacing: normal;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+      .btn-secondary:hover:not(:disabled) {
+        background-color: var(--color-surface);
+        border-color: var(--color-text-muted);
+        color: var(--color-text);
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #111; }
+      ::-webkit-scrollbar-thumb { background: #333; border: 1px solid #111; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+
+      /* Print Styles */
+      @media print {
+        body, html {
+          background-color: #fff;
+          color: #000;
+        }
+        body * {
+          visibility: hidden;
+          background: transparent !important;
+          box-shadow: none !important;
+          text-shadow: none !important;
+          border-color: #ddd !important;
+          animation: none !important;
+          color: #000 !important;
+        }
+        .printable, .printable * {
+          visibility: visible;
+        }
+        .printable {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          padding: 1rem;
+          font-family: 'Times New Roman', Times, serif;
+        }
+        .printable .font-display {
+          font-family: 'Helvetica', sans-serif;
+          text-transform: uppercase;
+        }
+        .printable .text-gray-300, .printable .text-gray-400 {
+          color: #333 !important;
+        }
+        .printable .bg-black\/30, .printable .bg-black\/40 { background-color: #f5f5f5 !important; }
+        .printable .border-l-2, .printable .border-l-4 { border-left-width: 2px !important; }
+        .printable .no-print { display: none !important; }
+      }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
