@@ -1,18 +1,15 @@
-import { GoogleGenAI, Modality } from "@google/genai";
+import { GoogleGenAI, Modality, Type } from "@google/genai";
 
+// Fix: As per guidelines, use process.env.API_KEY for the API key, not import.meta.env. This resolves the TypeScript error.
 const API_KEY = process.env.API_KEY;
 
 if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
+  // Fix: Update error message to reflect the change to process.env.API_KEY.
+  throw new Error("API_KEY environment variable not set. Please set it in your Netlify deployment settings.");
 }
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 const model = "gemini-2.5-flash";
-
-const cleanJsonString = (str: string): string => {
-  // Remove markdown backticks and "json" language identifier
-  return str.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
-}
 
 export const transcribeAudio = async (audio: { mimeType: string; data: string }): Promise<string> => {
     const audioPart = {
@@ -57,10 +54,23 @@ export const getBrutalityIndex = async (text: string): Promise<string> => {
   const systemInstruction = `You are the 'Brutality Index'. You will receive a block of text. Your job is to analyze its emotional intensity, sentiment, and energy. Respond ONLY in the following JSON format:\n\n{\n  "score": [A number from 1 (Static, no energy) to 10 (Mosh Pit, maximum intensity)],\n  "label": [A "metal" label for the score. Examples: 1="Static", 3="Brooding", 5="Feedback", 7="Aggro", 9="Wall of Death", 10="Mosh Pit"],\n  "analysis": "[A 1-2 sentence explanation of *why* you gave this score, using evocative language.]"\n}`;
   
   try {
+    // Fix: Add responseSchema for more reliable JSON output as per Gemini API guidelines.
     const response = await ai.models.generateContent({
       model,
       contents: `Analyze this text: "${text}"`,
-      config: { systemInstruction, responseMimeType: 'application/json' }
+      config: {
+        systemInstruction,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            score: { type: Type.NUMBER, description: "A number from 1 (Static, no energy) to 10 (Mosh Pit, maximum intensity)" },
+            label: { type: Type.STRING, description: "A 'metal' label for the score. Examples: 1='Static', 3='Brooding', 5='Feedback', 7='Aggro', 9='Wall of Death', 10='Mosh Pit'" },
+            analysis: { type: Type.STRING, description: "A 1-2 sentence explanation of why you gave this score, using evocative language." },
+          },
+          required: ['score', 'label', 'analysis'],
+        }
+      }
     });
     return response.text;
   } catch (error) {
